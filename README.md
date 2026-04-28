@@ -11,7 +11,7 @@ A comprehensive walkthrough of the **Lian_Yu** room on TryHackMe, focused on web
 ### Network Scanning
 I initiated the engagement by scanning the target IP `10.48.186.153` to identify open ports and services.
 
-```bash
+``bash
 nmap 10.48.186.153
 Open Ports Identified:
 
