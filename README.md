@@ -1,11 +1,13 @@
-1. Reconnaissance & Enumeration
+Reconnaissance & Enumeration
+--
 
 
 ### Network Scanning
+--
 I started by scanning the target IP `10.48.186.153` to see which ports were open and what services were running.
 
 bash
-
+--
 nmap 10.48.186.153
 What I found:
 
@@ -21,7 +23,7 @@ Web Directory Discovery
 I visited the web server and saw an "Arrowverse" themed page. To find hidden files, I ran gobuster to brute-force the directories.
 
 Bash
-
+--
 gobuster dir -u [http://10.48.186.153/island](http://10.48.186.153/island) -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 My findings:
 
@@ -38,9 +40,11 @@ In the /2100 directory, I found a comment hinting at a .ticket file.
 
 I navigated to http://10.48.186.153/island/2100/green_arrow.ticket and found a Base58 encoded string: RTy8yhBQdscX.
 
-2. Initial Access & Data Extraction
+Initial Access & Data Extraction
+--
 
 Decrypting the Token
+--
 I took the string RTy8yhBQdscX to CyberChef and decoded it from Base58.
 
 Resulting Password: !#th3h00d
@@ -57,8 +61,8 @@ passwd.txt
 
 shado (This contained the password: M3tahuman)
 
-3. System Access & User Flag
-
+System Access & User Flag
+--
 SSH Login
 I used the password from the shado file to log in as the user slade via SSH.
 
