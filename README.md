@@ -1,8 +1,9 @@
-## 🔍 Phase 1: Enumeration
-
-### Network Scanning
-I started with an **Nmap** scan to identify open services:
+🔍 Phase 1: Enumeration
 --
+
+ Network Scanning
+I started with an **Nmap** scan to identify open services:
+
 
 nmap -sV 10.48.186.153
 Port 21: FTP (vsFTPd 3.0.2)
@@ -22,8 +23,9 @@ Information Gathering
 Code Word: Found vigilante in the HTML source of the main page.
 
 Hidden Token: Found a file at /island/2100/green_arrow.ticket containing: RTy8yhBQdscX.
---
+
  Phase 2: Gaining Access
+ --
 Decryption
 Using CyberChef, I decoded the token from Base58:
 
@@ -35,8 +37,9 @@ FTP Data Extraction
 I logged into FTP using vigilante / !#th3h00d and downloaded ss.zip. After unzipping, I found the file shado.
 
 Credential Found: M3tahuman
---
+
  Phase 3: User Access
+ --
 SSH Login
 I accessed the machine via SSH as the user slade:
 
@@ -47,8 +50,9 @@ User Flag
 
 cat user.txt
 # THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
---
+
 Phase 4: Privilege Escalation (Root)
+--
 Sudo Privileges
 Checking for sudo permissions:
 
@@ -65,8 +69,9 @@ Root Flag
 
 whoami # root
 cat /root/root.txt
---
+
 Tools Used
+--
 Nmap (Scanning)
 
 Gobuster (Directory Brute-forcing)
