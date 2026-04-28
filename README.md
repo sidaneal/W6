@@ -1,102 +1,99 @@
-Got it—you want a single clean block, no extra tags, no weird IDs, just ready to paste into GitHub. Here’s the polished version 👇
+1. Reconnaissance & Enumeration
+--
 
-# 🏹 Lian_Yu CTF Walkthrough> **Room:** [Lian_Yu](https://tryhackme.com/room/lianyu)  > **Difficulty:** Easy  > **Platform:** TryHackMe  ---## 📝 DescriptionThis is a themed CTF based on the Arrowverse. The challenge involves:- Web enumeration  - Token decoding  - Credential harvesting  - Privilege escalation using sudo misconfiguration  ---## 🔍 Phase 1: Enumeration### 📡 Network ScanningI started with an **Nmap scan** to identify open services:```bashnmap -sV 10.48.186.153
-Results:
+### Network Scanning
+I started by scanning the target IP `10.48.186.153` to see which ports were open and what services were running.
 
+bash
+--
+nmap 10.48.186.153
+What I found:
 
-Port 21: FTP (vsFTPd 3.0.2)
+Port 21 (FTP): Running vsFTPd 3.0.2
 
+Port 22 (SSH): OpenSSH
 
-Port 22: SSH
+Port 80 (HTTP): Apache Web Server
 
+Port 111 (rpcbind)
 
-Port 80: HTTP (Apache)
+Web Directory Discovery
+I visited the web server and saw an "Arrowverse" themed page. To find hidden files, I ran gobuster to brute-force the directories.
 
+Bash
+--
+gobuster dir -u [http://10.48.186.153/island](http://10.48.186.153/island) -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+My findings:
 
+Found a directory at /island.
 
-🌐 Web Directory Discovery
-Using Gobuster, I discovered a hidden directory:
-gobuster dir -u http://10.48.186.153/island -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-Discovered Path:
-/island/2100
+After a recursive scan, I discovered another path at /island/2100.
 
-🕵️ Information Gathering
+Hunting for Hints
+I inspected the source code of the pages I found:
 
+On the /island page, I found a hidden string: vigilante.
 
-Code Word: Found vigilante in the HTML source
+In the /2100 directory, I found a comment hinting at a .ticket file.
 
+I navigated to http://10.48.186.153/island/2100/green_arrow.ticket and found a Base58 encoded string: RTy8yhBQdscX.
 
-Hidden Token:
-/island/2100/green_arrow.ticket
-Content:
-RTy8yhBQdscX
+2. Initial Access & Data Extraction
+--
+Decrypting the Token
+I took the string RTy8yhBQdscX to CyberChef and decoded it from Base58.
 
+Resulting Password: !#th3h00d
 
+FTP Exploitation
+With the username vigilante and the password !#th3h00d, I logged into the FTP server.
 
-🔓 Phase 2: Gaining Access
-🔐 Decryption
-Using CyberChef, I decoded the token from Base58:
-
-
-Encoded: RTy8yhBQdscX
-
-
-Decoded: !#th3h00d
-
-
-
-📂 FTP Access & Data Extraction
-Logged into FTP:
+Bash
+--
 ftp 10.48.186.153
-Credentials:
-Username: vigilantePassword: !#th3h00d
-Downloaded file:
-ss.zip
-After extraction:
-unzip ss.zip
-Found file:
-shado
-Credential Discovered:
-M3tahuman
+Inside, I found and downloaded a zip file named ss.zip. I extracted it and found two files that were very useful:
 
-🚩 Phase 3: User Access
-💻 SSH Login
+passwd.txt
+
+shado (This contained the password: M3tahuman)
+
+3. System Access & User Flag
+--
+SSH Login
+I used the password from the shado file to log in as the user slade via SSH.
+
+Bash
+--
 ssh slade@10.48.186.153
-Password:
-M3tahuman
+# Password: M3tahuman
+Capturing the User Flag
+Once I was in the system, I checked the home directory and grabbed the first flag.
 
-🏁 User Flag
-cat user.txt
-THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
+Bash
+--
+slade@LianYu:~$ cat user.txt
+# THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
+4. Privilege Escalation to Root
+Sudo Rights Enumeration
+I checked my current user's sudo privileges to see how I could get root access.
 
-⚡ Phase 4: Privilege Escalation (Root)
-🔑 Sudo Privileges
-sudo -l
-Result:
-User slade may run /usr/bin/pkexec as root without a password
+Bash
+--
+slade@LianYu:~$ sudo -l
+The Vulnerability: I saw that slade can run /usr/bin/pkexec as root with NOPASSWD.
 
-💥 Exploitation
-Using GTFOBins technique:
+Exploitation
+I used the GTFOBins method for pkexec to break out of the restricted shell and spawn a root shell.
+
+Bash
+--
 sudo /usr/bin/pkexec /bin/sh
+Final Root Flag
+I confirmed I was root and then read the final flag to finish the machine.
 
-👑 Root Access
-whoami
+
+Bash
+--
+# whoami
 root
-cat /root/root.txt
-
-🛠️ Tools Used
-
-
-Nmap — Network scanning
-
-
-Gobuster — Directory brute-forcing
-
-
-CyberChef — Token decoding
-
-
-FTP — File transfer
-
-
-SSH — Remote access
+# cat /root/root.txt
