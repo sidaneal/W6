@@ -89,13 +89,10 @@ Once I was in the system, I checked the home directory and grabbed the first fla
 <img width="804" height="603" alt="Screenshot 2026-04-28 161616" src="https://github.com/user-attachments/assets/6e7c943e-a3f4-4664-a801-521956dffe37" />
 
 
-
-
 slade@LianYu:~$ cat user.txt
 # THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
 
 <img width="811" height="169" alt="Screenshot 2026-04-28 161649" src="https://github.com/user-attachments/assets/696a2e19-b822-4b3b-b6b8-f125f95d3604" />
-
 
 Privilege Escalation to Root
 --
