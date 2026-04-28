@@ -3,7 +3,7 @@ Reconnaissance & Enumeration
 
 
 ### Network Scanning
---
+
 I started by scanning the target IP `10.48.186.153` to see which ports were open and what services were running.
 
 bash
