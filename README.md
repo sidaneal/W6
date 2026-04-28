@@ -115,3 +115,6 @@ sudo /usr/bin/pkexec /bin/sh
 Final Root Flag
 I confirmed I was root and then read the final flag to finish the machine.
 
+<img width="1520" height="715" alt="image" src="https://github.com/user-attachments/assets/14cc1ab0-7e1e-4f7a-a501-3a967dfb357f" />
+
+
