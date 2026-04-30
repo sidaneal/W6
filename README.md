@@ -82,7 +82,9 @@ I used the password from the shado file to log in as the user slade via SSH.
 
 
 ssh slade@10.48.186.153
-# Password: M3tahuman
+# Password:
+
+M3tahuman
 Capturing the User Flag
 Once I was in the system, I checked the home directory and grabbed the first flag.
 
